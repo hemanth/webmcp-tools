@@ -12,7 +12,7 @@ import { SingleBar } from "cli-progress";
 import minimist from "minimist";
 import { Config } from "../types/config.js";
 import { renderReport } from "../report/report.js";
-import { executeEvals } from "../evaluator.js";
+import { executeEvals } from "../evaluator/index.js";
 
 dotenv.config();
 
@@ -61,13 +61,15 @@ const progressBar = new SingleBar({
 });
 
 let passCount = 0;
+let stepCount = 0;
 const finalResults = await executeEvals(tests, tools, config, (event) => {
   if (event.type === 'start') {
     progressBar.start(event.total, 0, { accuracy: "0.00" });
   } else if (event.type === 'progress') {
+    stepCount++;
     if (event.result.outcome === "pass") passCount++;
-    progressBar.update(event.testNumber, {
-      accuracy: ((passCount / event.testNumber) * 100).toFixed(2),
+    progressBar.update(stepCount, {
+      accuracy: ((passCount / stepCount) * 100).toFixed(2),
     });
   }
 });

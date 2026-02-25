@@ -80,15 +80,16 @@ function renderDetails(testResults: Array<TestResult>): string {
   return `<ul>${testResults.map((t, i) => renderDetail(i, t)).join("")}</ul>`;
 }
 
+// FIXME: Add graceful handling of expected calls
 function renderDetail(testNumber: number, testResult: TestResult): string {
   const functionNameOutcome =
-    testResult.test.expectedCall?.functionName ===
-    testResult.response?.functionName
+    testResult.test.expectedCall?.[0].functionName ===
+      testResult.response?.functionName
       ? "pass"
       : "fail";
 
   const argsOutcome = matchesArgument(
-    testResult.test.expectedCall?.arguments,
+    testResult.test.expectedCall?.[0].arguments,
     testResult.response?.args,
   )
     ? "pass"
@@ -116,7 +117,7 @@ function renderDetail(testNumber: number, testResult: TestResult): string {
                         </tr>
                         <tr>
                             <th>Function</th>
-                            <td><code>${testResult.test.expectedCall?.functionName || null}</code></td>
+                            <td><code>${testResult.test.expectedCall?.[0].functionName || null}</code></td>
                             <td><code>${testResult.response?.functionName || null}</code></td>
                             <td class="${functionNameOutcome}">
                                 ${functionNameOutcome.toUpperCase()}
@@ -126,7 +127,7 @@ function renderDetail(testNumber: number, testResult: TestResult): string {
                             <th>Arguments</th>
                             <td>
                                 <code>
-                                    <pre>${JSON.stringify(testResult.test.expectedCall?.arguments || null, null, 2)}</pre>
+                                    <pre>${JSON.stringify(testResult.test.expectedCall?.[0].arguments || null, null, 2)}</pre>
                                 </code>
                             </td>
                             <td>

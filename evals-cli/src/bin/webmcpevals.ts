@@ -7,12 +7,11 @@ import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 import * as dotenv from "dotenv";
 import { Eval } from "../types/evals.js";
+import { WebmcpConfig } from "../types/config.js";
 import { SingleBar } from "cli-progress";
 import minimist from "minimist";
-import { WebmcpConfig } from "../types/config.js";
 import { renderWebmcpReport } from "../report/report.js";
-import { listToolsFromPage } from "../browser/webmcp.js";
-import { executeEvals } from "../evaluator.js";
+import { executeInBrowserEvals, executeEvals, listToolsFromPage } from "../evaluator/index.js";
 
 dotenv.config();
 
@@ -54,13 +53,15 @@ const progressBar = new SingleBar({
 });
 
 let passCount = 0;
-const finalResults = await executeEvals(tests, tools, config, (event) => {
+let stepCount = 0;
+const finalResults = await executeInBrowserEvals(tests, tools, config, (event) => {
   if (event.type === 'start') {
     progressBar.start(event.total, 0, { accuracy: "0.00" });
   } else if (event.type === 'progress') {
+    stepCount++;
     if (event.result.outcome === "pass") passCount++;
-    progressBar.update(event.testNumber, {
-      accuracy: ((passCount / event.testNumber) * 100).toFixed(2),
+    progressBar.update(stepCount, {
+      accuracy: ((passCount / stepCount) * 100).toFixed(2),
     });
   }
 });
