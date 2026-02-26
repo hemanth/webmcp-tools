@@ -51,7 +51,7 @@ function toggleLayer(layerId, action = 'toggle') {
   }
 }
 
-function addTopping(emoji, size = 'Medium', count = 5) {
+function addTopping(emoji, size, count) {
   for (let i = 0; i < count; i++) {
     const topping = document.createElement('div');
     topping.className = 'topping';
@@ -173,20 +173,38 @@ if (window.navigator.modelContext) {
 
   navigator.modelContext.registerTool({
     name: 'set_pizza_size',
-    description: 'Set the size of the pizza',
+    description: 'Set the pizza size directly or infer it based on the number of people.',
     inputSchema: {
       type: 'object',
       properties: {
-        size: { type: 'string', enum: ['Small', 'Medium', 'Large', 'Extra Large'] },
+        size: {
+          type: 'string',
+          enum: ['Small', 'Medium', 'Large', 'Extra Large'],
+          description: 'The specific size name.',
+        },
+        number_of_persons: {
+          type: 'number',
+          description: 'The number of people eating to help infer the correct size.',
+        },
       },
-      required: ['size'],
     },
-    execute: ({ size }) => {
-      if (sizes[size]) {
-        changeSize(sizes[size], size);
-        return `Changed pizza size to ${size}`;
+    execute: ({ size, number_of_persons }) => {
+      let finalSize = size;
+
+      // Logic to infer size if only number_of_persons is provided
+      if (!finalSize && number_of_persons) {
+        if (number_of_persons <= 2) finalSize = 'Small';
+        else if (number_of_persons <= 4) finalSize = 'Medium';
+        else if (number_of_persons <= 6) finalSize = 'Large';
+        else finalSize = 'Extra Large';
       }
-      return `Invalid size: ${size}`;
+
+      if (finalSize && sizes[finalSize]) {
+        changeSize(sizes[finalSize], finalSize);
+        return `Set pizza size to ${finalSize}${number_of_persons ? ` for ${number_of_persons} people` : ''}.`;
+      }
+
+      return `Could not determine a valid size. Please specify a size or number of guests.`;
     },
   });
 
@@ -245,7 +263,7 @@ if (window.navigator.modelContext) {
       },
       required: ['topping'],
     },
-    execute: ({ topping, size, count }) => {
+    execute: ({ topping, size = 'Medium', count = 5 }) => {
       addTopping(topping, size, count);
       return `Added ${count} ${topping} topping(s)`;
     },

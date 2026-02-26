@@ -1,0 +1,164 @@
+[
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "I'd like a small pizza."
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "set_pizza_size",
+        "arguments": { "size": "Small" }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "A Pesto pizza please!"
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "set_pizza_style",
+        "arguments": { "style": "Pesto" }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Add extra sauce."
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "toggle_layer",
+        "arguments": { "layer": "sauce-layer", "action": "add" }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Add bell peppers."
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "add_topping",
+        "arguments": { "topping": "🫑" }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "I want 10 mushrooms"
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "add_topping",
+        "arguments": { "topping": "🍄", "count": 10 }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "We are 10 actually"
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "set_pizza_size",
+        "arguments": { "number_of_persons": 10 }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Remove corn"
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "remove_topping",
+        "arguments": { "topping": "🌽" }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Let's do it over again"
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "manage_pizza",
+        "arguments": { "action": "reset" }
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Add one onion"
+      },
+      {
+        "role": "model",
+        "type": "functioncall",
+        "name": "add_topping",
+        "arguments": {
+          "topping": "🧅",
+          "count": "1"
+        }
+      },
+      {
+        "role": "user",
+        "type": "functionresponse",
+        "name": "add_topping",
+        "response": {
+          "result": "Added 1 🧅 topping(s)."
+        }
+      },
+      {
+        "role": "model",
+        "type": "message",
+        "content": "I've added an onion. Anything else?"
+      },
+      {
+        "role": "user",
+        "type": "message",
+        "content": "Remove last toppping"
+      }
+    ],
+    "expectedCall": [
+      {
+        "functionName": "manage_pizza",
+        "arguments": { "action": "remove_last" }
+      }
+    ]
+  }
+]
