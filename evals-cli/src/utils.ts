@@ -61,3 +61,29 @@ export function functionCallOutcome(
 
   return "pass";
 }
+
+export function sortObjectKeys(obj: any): any {
+  if (typeof obj === 'string') {
+    try {
+      const parsed = JSON.parse(obj);
+      if (typeof parsed === 'object' && parsed !== null) {
+        obj = parsed;
+      }
+    } catch (e) {
+      // not JSON string, return as is
+    }
+  }
+  
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(sortObjectKeys);
+  }
+  const sortedKeys = Object.keys(obj).sort();
+  const res: any = {};
+  for (const k of sortedKeys) {
+    res[k] = sortObjectKeys(obj[k]);
+  }
+  return res;
+}

@@ -9,6 +9,7 @@ export type Config = {
   backend: string;
   provider?: string;
   model: string;
+  debug?: boolean;
 };
 
 export type WebmcpConfig = {
@@ -17,4 +18,5 @@ export type WebmcpConfig = {
   backend: string;
   provider?: string;
   model: string;
+  debug?: boolean;
 };

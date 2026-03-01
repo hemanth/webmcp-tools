@@ -44,6 +44,7 @@ export type TestResult = {
   test: Eval;
   response: ToolCall | null;
   outcome: "pass" | "fail" | "error";
+  trajectory?: any[];
 };
 
 export type TestResults = {

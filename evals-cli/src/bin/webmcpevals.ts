@@ -8,10 +8,14 @@ import { resolve } from "path";
 import * as dotenv from "dotenv";
 import { Eval } from "../types/evals.js";
 import { WebmcpConfig } from "../types/config.js";
-import { SingleBar } from "cli-progress";
+import ora from "ora";
+import chalk from "chalk";
+import Table from "cli-table3";
 import minimist from "minimist";
+import open from "open";
 import { renderWebmcpReport } from "../report/report.js";
 import { executeInBrowserEvals, listToolsFromPage } from "../evaluator/index.js";
+import { sortObjectKeys } from "../utils.js";
 
 dotenv.config();
 
@@ -34,12 +38,20 @@ if (args.backend && args.backend === "ollama" && !args.model) {
   process.exit(1);
 }
 
+process.on("SIGINT", () => {
+  console.log("\nGracefully shutting down from SIGINT (Ctrl-C)");
+  process.kill(process.pid, 'SIGKILL');
+});
+
+const debug = args.debug || args.verbose || false;
+
 const config: WebmcpConfig = {
   url: args.url,
   evalsFile: args.evals,
   backend: args.backend || "vercel",
   provider: args.provider || "gemini",
   model: args.model || "gemini-2.5-flash",
+  debug,
 };
 
 const tools = await listToolsFromPage(config.url);
@@ -48,31 +60,72 @@ const tests: Array<Eval> = JSON.parse(
   await readFile(resolve(process.cwd(), config.evalsFile), "utf-8"),
 );
 
-const progressBar = new SingleBar({
-  format:
-    "progress [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} | accuracy: {accuracy}%",
-});
+const spinner = ora({ discardStdin: false });
+const resultsList: any[] = [];
 
-let passCount = 0;
-let stepCount = 0;
 const finalResults = await executeInBrowserEvals(tests, tools, config, (event) => {
   if (event.type === 'start') {
-    console.log(event.message);
-    progressBar.start(event.total, 0, { accuracy: "0.00" });
+    spinner.start(`Running evals (${event.total} steps)...`);
   } else if (event.type === 'progress') {
-    stepCount++;
-    if (event.result.outcome === "pass") passCount++;
-    progressBar.update(stepCount, {
-      accuracy: ((passCount / stepCount) * 100).toFixed(2),
-    });
+    const res = event.result;
+    resultsList.push(res);
+    
+    if (config.debug) {
+      spinner.stop();
+      console.log(`\n--- [DEBUG] Test ${resultsList.length} Outcome: ${res.outcome.toUpperCase()} ---`);
+      
+      if (res.outcome !== "pass") {
+        const expectedSorted = sortObjectKeys(res.test.expectedCall);
+        const actualSorted = sortObjectKeys(res.response);
+        console.log(`Expected: ${JSON.stringify(expectedSorted, null, 2)}`);
+        console.log(`Actual: ${JSON.stringify(actualSorted, null, 2)}`);
+      }
+      
+      spinner.start();
+    }
+
+    const passRate = ((resultsList.filter((r) => r.outcome === "pass").length / resultsList.length) * 100).toFixed(2);
+    spinner.text = `Running... pass rate: ${passRate}% (${resultsList.length} steps)`;
   }
 });
-progressBar.stop();
+spinner.stop();
+
+console.log("\n" + chalk.bold.underline("Evaluation Summary") + "\n");
+
+const table = new Table({
+  head: ["Step", "Status", "Expected Function", "Actual Function"],
+  style: {
+    head: ["cyan"],
+    border: ["grey"],
+  },
+});
+
+for (let i = 0; i < finalResults.results.length; i++) {
+  const res = finalResults.results[i];
+  const passed = res.outcome === "pass";
+  table.push([
+    i + 1,
+    passed ? chalk.green("PASS") : chalk.red(res.outcome.toUpperCase()),
+    res.test.expectedCall?.[0]?.functionName || "-",
+    res.response?.functionName || "-",
+  ]);
+}
+
+console.log(table.toString());
+
+const totalSteps = finalResults.results.length;
+const passRate = ((finalResults.passCount / totalSteps) * 100).toFixed(1);
+const color =
+  finalResults.passCount === totalSteps ? chalk.green : finalResults.passCount === 0 ? chalk.red : chalk.yellow;
+console.log(`\nPass count: ${color(`${finalResults.passCount}/${totalSteps}`)} (${passRate}%)\n`);
 
 const report = renderWebmcpReport(config, finalResults);
 
 const reportName = `report-${Date.now()}.html`;
 
 await writeFile(reportName, report);
-console.log(`\nReport saved to ${reportName}`);
+console.log(`Report saved to ${reportName}`);
+
+await open(reportName);
+
 process.exit();

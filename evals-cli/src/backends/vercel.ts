@@ -168,10 +168,12 @@ export class VercelBackend implements Backend {
           }
         }
 
+        const trajectory = resultPayload.steps || [];
+
         // If no tool was called at all, record a failure against the first expected call
         if (executedCalls.length === 0) {
           const response: any = { text: resultPayload.text };
-          const stepResult: TestResult = { test, response, outcome: "fail" };
+          const stepResult: TestResult = { test, response, outcome: "fail", trajectory };
           testResults.push(stepResult);
           failCount++;
           if (onEvent) {
@@ -190,7 +192,7 @@ export class VercelBackend implements Backend {
             }
 
             const outcome = functionCallOutcome(currentFunctionCall, response);
-            const stepResult: TestResult = { test: { messages: currentMessages, expectedCall: currentFunctionCall ? [currentFunctionCall] : null }, response, outcome };
+            const stepResult: TestResult = { test: { messages: currentMessages, expectedCall: currentFunctionCall ? [currentFunctionCall] : null }, response, outcome, trajectory };
             testResults.push(stepResult);
             outcome === "pass" ? passCount++ : failCount++;
 
