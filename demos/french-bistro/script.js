@@ -7,6 +7,17 @@ const form = document.getElementById('reservationForm');
 const dialog = document.getElementById('bookingDialog');
 const closeBtn = document.getElementById('closeDialogBtn');
 const modalDetails = document.getElementById('modalDetails');
+const params = new URLSearchParams(window.location.search);
+const isCrossDocument = params.has("crossdocument");
+const toolAutoSubmit = params.has("toolautosubmit");
+
+if (isCrossDocument) {
+  form.setAttribute("action", "./result.html");
+}
+
+if (toolAutoSubmit) {
+  form.setAttribute("toolautosubmit", "true");
+}
 
 let formValidationErrors = []; // Array to collect validation error messages to send back to the Agent.
 
@@ -23,6 +34,11 @@ form.addEventListener('submit', function (e) {
     if (e.agentInvoked) {
       e.respondWith(formValidationErrors);
     }
+    return;
+  }
+
+  if (isCrossDocument) {
+    form.submit();
     return;
   }
 

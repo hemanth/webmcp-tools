@@ -1,14 +1,5 @@
 import { flights, type Flight } from "./data/flights";
 
-declare global {
-  interface Navigator {
-    modelContext?: {
-      registerTool: (tool: object) => void;
-      unregisterTool: (name: string) => void;
-    };
-  }
-}
-
 const registeredTools = {
   listFlights: false,
   setFilters: false,
@@ -107,7 +98,7 @@ export const listFlightsTool = {
     required: ["result"],
   },
   annotations: {
-    readOnlyHint: "true",
+    readOnlyHint: true,
   },
 };
 
@@ -206,7 +197,7 @@ export const setFiltersTool = {
       "a message describing if the filter update request was successful or not",
   },
   annotations: {
-    readOnlyHint: "false",
+    readOnlyHint: false,
   },
 };
 
@@ -225,7 +216,7 @@ export const resetFiltersTool = {
       "a message describing if the filter reset request was successful or not",
   },
   annotations: {
-    readOnlyHint: "false",
+    readOnlyHint: false,
   },
 };
 
@@ -238,7 +229,8 @@ export type SearchFlights = {
   passengers: number;
 };
 
-export async function searchFlights(params: SearchFlights): Promise<string> {
+export async function searchFlights(p: unknown): Promise<string> {
+  const params = p as SearchFlights;
   if (!params.destination.match(/^[A-Z]{3}$/)) {
     return "ERROR: `destination` must be a 3 letter city or airport IATA code.";
   }
@@ -307,7 +299,7 @@ export const searchFlightsTool = {
     description: "a message describing the result of the flight search request",
   },
   annotations: {
-    readOnlyHint: "false",
+    readOnlyHint: false,
   },
 };
 
