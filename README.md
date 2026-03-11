@@ -13,6 +13,7 @@ This repository contains a suite of developer utilities and demos designed to su
 - [**Le Petit Bistro (Declarative)**](demos/french-bistro/): A WebMCP simple implementation for a restaurant reservation system. It allows an AI agent to interact directly with a web-based booking form, validating and submitting data on behalf of the user using declarative tool definitions.
 - [**WebMCP zaMaker! (Imperative)**](demos/pizza-maker/): A demo where AI agents can control size, style, toppings, and layers to build the perfect pizza using imperative tools.
 - [**Mystery Doors (Declarative & Imperative)**](demos/doors/): A simple multi-page demo showcasing WebMCP capabilities using both declarative and imperative approaches.
+- [**WebMCP Maze (Imperative)**](demos/webmcp-maze/): A maze escape game where the player navigates entirely by prompting an AI agent in the browser — no keyboard or mouse input.
 
 Check out our curated list of WebMCP demos in the [Awesome WebMCP List](AWESOME_WEBMCP.md).
 
