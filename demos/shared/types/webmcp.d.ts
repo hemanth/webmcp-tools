@@ -41,7 +41,7 @@ declare global {
     execute: (
       input: Record<string, unknown>,
       client: ModelContextClient,
-    ) => Promise<unknown>;
+    ) => unknown | Promise<unknown>;
 
     /** Optional hints about the tool's behavior. */
     annotations?: {
@@ -62,24 +62,5 @@ declare global {
   interface Navigator {
     /** WebMCP model context API. May be undefined if the browser doesn't support it. */
     modelContext?: ModelContext;
-  }
-
-  /**
-   * Game-owned tool dispatch helper installed on `window.gameTools`.
-   * Always reflects the currently registered tool set.
-   */
-  interface GameTools {
-    /**
-     * Execute a registered game tool by name.
-     * @param name - The tool name (e.g. `"move"`, `"look"`).
-     * @param args - Input object matching the tool's `inputSchema`.
-     * @returns The tool's raw return value (a JSON string for all built-in tools).
-     */
-    executeTool(name: string, args: Record<string, unknown>): Promise<unknown>;
-  }
-
-  interface Window {
-    /** Game-owned tool dispatch helper. Available as soon as the game loads. */
-    gameTools: GameTools;
   }
 }
