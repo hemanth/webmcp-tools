@@ -14,29 +14,27 @@ if (modelContext) {
                 },
                 min_price: {
                     type: "number",
-                    description: "Minimum price in euros."
+                    description: "Minimum price in USD ($)."
                 },
                 max_price: {
                     type: "number",
-                    description: "Maximum price in euros."
+                    description: "Maximum price in USD ($)."
                 },
                 min_area: {
                     type: "number",
-                    description: "Minimum area in square meters."
+                    description: "Minimum living area in sq ft."
                 },
                 min_bedrooms: {
                     type: "number",
                     description: "Minimum number of bedrooms."
                 },
-                energy_classes: {
-                    type: "array",
-                    items: { type: "string" },
-                    description: "Allowed energy classes (DPE), e.g., 'A', 'B', 'C', 'D', 'E', 'F', 'G'."
-                },
                 features: {
                     type: "array",
-                    items: { type: "string" },
-                    description: "List of required features (e.g., 'Balcony', 'Terrace', 'Elevator', 'Parking')."
+                    items: {
+                        type: "string",
+                        enum: ["Balcony", "Terrace", "Elevator", "Parking", "Central AC"]
+                    },
+                    description: "Must-have amenities/features (e.g. 'Central AC', 'Parking')."
                 }
             }
         },
@@ -68,13 +66,6 @@ if (modelContext) {
                     if (val > 4) val = '4'; // Max is 4+
                     document.querySelectorAll('input[name="minBedrooms"]').forEach(el => {
                         el.checked = (el.value === val);
-                    });
-                }
-                
-                // Update Energy Classes
-                if (params.energy_classes) {
-                    document.querySelectorAll('.energy-filter').forEach(el => {
-                        el.checked = params.energy_classes.includes(el.value);
                     });
                 }
                 

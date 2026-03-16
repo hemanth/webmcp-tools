@@ -5,8 +5,8 @@ window.realEstateApp = {
     debounceTimer: null,
 
     initMap: function() {
-        // Paris coordinates
-        const paris = { lat: 48.8566, lng: 2.3522 };
+        // Seattle coordinates
+        const seattle = { lat: 47.6062, lng: -122.3321 };
         
         // Ensure google maps is loaded
         if (typeof google === 'undefined' || !google.maps) {
@@ -15,8 +15,8 @@ window.realEstateApp = {
         }
 
         this.map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 13,
-            center: paris,
+            zoom: 12,
+            center: seattle,
             styles: [],
             mapTypeControl: false,
             streetViewControl: false,
@@ -57,7 +57,7 @@ window.realEstateApp = {
     },
 
     formatPrice: function(price) {
-        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(price);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(price);
     },
 
     createMarkerContent: function(property) {
@@ -65,8 +65,8 @@ window.realEstateApp = {
         div.className = 'bg-white px-3 py-1.5 rounded-full shadow-md border border-slate-200 text-sm font-bold text-slate-800 hover:bg-primary hover:text-white hover:border-primary transition-colors cursor-pointer transform hover:scale-105';
         
         let displayPrice = property.price >= 1000000 
-            ? '€' + (property.price / 1000000).toFixed(1) + 'M' 
-            : '€' + (property.price / 1000).toFixed(0) + 'k';
+            ? '$' + (property.price / 1000000).toFixed(1) + 'M' 
+            : '$' + (property.price / 1000).toFixed(0) + 'k';
             
         div.innerHTML = displayPrice;
         return div;
@@ -109,7 +109,7 @@ window.realEstateApp = {
                             <div class="flex items-center gap-3 text-xs text-slate-700 font-semibold mb-2">
                                 <span>${property.rooms} rooms</span>
                                 <span>${property.bedrooms} bedrooms</span>
-                                <span>${property.area} m²</span>
+                                <span>${property.area} sq ft</span>
                             </div>
                         </div>
                     </div>
@@ -144,9 +144,12 @@ window.realEstateApp = {
         filteredProperties.forEach((prop, index) => {
             // Construct features pills
             let featuresHtml = '';
-            if (prop.energyClass) {
-                const colorMap = { A: 'bg-green-600', B: 'bg-green-500', C: 'bg-lime-500', D: 'bg-yellow-400', E: 'bg-orange-400', F: 'bg-orange-600', G: 'bg-red-600' };
-                featuresHtml += `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white ${colorMap[prop.energyClass]}">DPE ${prop.energyClass}</span>`;
+            
+            if (prop.features.includes("Central AC")) {
+                featuresHtml += `<span class="px-1.5 py-0.5 rounded border border-slate-200 text-slate-500 text-[10px] font-bold">A/C</span>`;
+            }
+            if (prop.features.includes("Parking")) {
+                featuresHtml += `<span class="px-1.5 py-0.5 rounded border border-slate-200 text-slate-500 text-[10px] font-bold">Parking</span>`;
             }
             if (prop.features.includes("Terrace") || prop.features.includes("Balcony")) {
                 featuresHtml += `<span class="px-1.5 py-0.5 rounded border border-slate-200 text-slate-500 text-[10px] font-bold">Exterior</span>`;
@@ -182,7 +185,7 @@ window.realEstateApp = {
                             </div>
                             <div class="flex items-center gap-1">
                                 <span class="material-symbols-outlined text-base">square_foot</span>
-                                <span class="text-sm font-semibold tracking-tight">${prop.area} m²</span>
+                                <span class="text-sm font-semibold tracking-tight">${prop.area} sq ft</span>
                             </div>
                         </div>
                         
@@ -258,7 +261,6 @@ window.realEstateApp = {
         const minBedrooms = bedRadio ? parseInt(bedRadio.value) : 0;
         
         // Collect Advanced form inputs
-        const energyClasses = Array.from(document.querySelectorAll('.energy-filter:checked')).map(el => el.value);
         const requiredFeatures = Array.from(document.querySelectorAll('.feature-filter:checked')).map(el => el.value);
 
         // Filter data array
@@ -271,9 +273,6 @@ window.realEstateApp = {
             if (p.area < minArea) return false;
             // Beds
             if (p.bedrooms < minBedrooms) return false;
-            
-            // Energy Class
-            if (energyClasses.length > 0 && !energyClasses.includes(p.energyClass)) return false;
             
             // Features (must have ALL required features)
             if (requiredFeatures.length > 0) {
@@ -314,7 +313,6 @@ window.realEstateApp = {
             el.checked = (el.value === '0');
         });
         
-        document.querySelectorAll('.energy-filter:checked').forEach(el => el.checked = false);
         document.querySelectorAll('.feature-filter:checked').forEach(el => el.checked = false);
 
         this.updatePriceDisplay();
