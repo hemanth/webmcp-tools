@@ -38,7 +38,7 @@ if (modelContext) {
                 }
             }
         },
-        execute: async (params) => {
+        execute: (params) => {
             try {
                 // Update Types
                 if (params.types) {
@@ -83,9 +83,9 @@ if (modelContext) {
                 const visibleCount = window.realEstateApp.markers.filter(m => m.getVisible() !== false).length;
                 window.realEstateApp.showAlert(`Filters applied. ${visibleCount} properties found.`);
                 
-                return { status: "success", visible_properties_count: visibleCount };
+                return `Filters successfully applied. Found ${visibleCount} properties matching the criteria.`;
             } catch (error) {
-                return { status: "error", message: error.message };
+                return `Error applying filters: ${error.message}`;
             }
         }
     });
@@ -93,13 +93,9 @@ if (modelContext) {
     modelContext.registerTool({
         name: "clear_filters",
         description: "Resets all filters to their default states and shows all available properties.",
-        inputSchema: {
-            type: "object",
-            properties: {}
-        },
-        execute: async () => {
+        execute: () => {
             window.realEstateApp.clearFilters();
-            return { status: "success", message: "All filters cleared." };
+            return "Successfully cleared all filters. All available properties are now shown.";
         }
     });
 
@@ -116,10 +112,10 @@ if (modelContext) {
             },
             required: ["property_id"]
         },
-        execute: async (params) => {
+        execute: (params) => {
             const marker = window.realEstateApp.markers.find(m => m.propertyData.id === params.property_id);
             if (!marker) {
-                return { status: "error", message: `Property with ID ${params.property_id} not found.` };
+                return `Error: Property with ID ${params.property_id} not found.`;
             }
             window.realEstateApp.panToProperty(marker.propertyData.lat, marker.propertyData.lng);
             
@@ -129,10 +125,7 @@ if (modelContext) {
             }
             
             window.realEstateApp.showAlert(`Viewing details for property ${params.property_id}`);
-            return { 
-                status: "success", 
-                property_details: marker.propertyData
-            };
+            return `Successfully zoomed to and opened details for property ID ${params.property_id} (${marker.propertyData.title}).`;
         }
     });
 } else {
