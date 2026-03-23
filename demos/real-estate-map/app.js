@@ -160,6 +160,9 @@ window.realEstateApp = {
                 <article class="bg-white border text-sm border-slate-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow cursor-pointer listing-card group" style="animation-delay: ${index * 0.05}s" onclick="realEstateApp.panToProperty(${prop.lat}, ${prop.lng})">
                     <div class="relative h-48 overflow-hidden">
                         <img src="${prop.image}" alt="${prop.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-white/90 backdrop-blur text-slate-700 text-[10px] font-extrabold px-2 py-1 rounded shadow-sm uppercase tracking-wider">ID: ${prop.id}</span>
+                        </div>
                         <div class="absolute top-3 right-3">
                             <button class="bg-white/90 backdrop-blur rounded-full p-2 text-slate-500 hover:text-red-500 transition-colors shadow-sm focus:outline-none" onclick="event.stopPropagation(); this.classList.toggle('text-red-500'); this.classList.toggle('text-slate-500'); realEstateApp.showAlert('Toggled Favorite')">
                                 <span class="material-symbols-outlined text-lg leading-none">favorite</span>
