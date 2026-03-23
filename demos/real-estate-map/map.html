@@ -193,12 +193,22 @@
         <button id="close-map-btn" class="absolute top-4 left-4 z-10 bg-white p-2 rounded shadow-md md:hidden text-slate-700 flex items-center gap-1" onclick="document.getElementById('map-container').classList.add('hidden')">
             <span class="material-symbols-outlined">arrow_back</span> Back to list
         </button>
-        <div id="map" class="w-full h-full bg-slate-200">
+        <div id="map" class="w-full h-full bg-slate-200 relative">
             <!-- Google Maps will attach here -->
-            <div class="flex items-center justify-center h-full flex-col text-slate-500">
-                <span class="material-symbols-outlined text-4xl mb-2 animate-pulse">location_on</span>
-                <p>Loading interactive map...</p>
-                <p class="text-xs mt-2 text-center max-w-xs">If this does not load, please ensure a valid Google Maps API Key has been provided in the source.</p>
+            <div id="map-placeholder" class="absolute inset-0 flex items-center justify-center flex-col text-slate-500 bg-slate-200 z-10">
+                <span class="material-symbols-outlined text-4xl mb-2 animate-pulse" id="map-loading-icon">location_on</span>
+                <p id="map-loading-text">Loading interactive map...</p>
+                
+                <div id="api-key-prompt" class="mt-4 flex flex-col items-center hidden bg-white p-6 rounded-xl shadow-lg border border-slate-200 max-w-sm text-center">
+                    <span class="material-symbols-outlined text-3xl text-primary mb-2">vpn_key</span>
+                    <h3 class="font-bold text-slate-800 mb-2">API Key Required</h3>
+                    <p class="text-sm text-slate-600 mb-4">To view the map, please provide your Google Maps API key. It will be stored securely in your browser's localStorage.</p>
+                    <input type="password" id="api-key-input" placeholder="AIzaSy..." class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <button onclick="saveAndLoadMap()" class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">
+                        Load Map
+                    </button>
+                    <p class="text-[10px] text-slate-400 mt-3 mt-4">For production, restrict your API key to your specific domain (like GitHub Pages) via the Google Cloud Console.</p>
+                </div>
             </div>
         </div>
     </main>
@@ -212,15 +222,61 @@
     <script src="data.js"></script>
     <script src="app.js"></script>
     <script src="mcp.js"></script>
-    <!-- Define the global callback for Google Maps -->
+    <!-- Dynamic Google Maps loader -->
     <script>
+        // Define the global callback for Google Maps
         function initMap() {
             if (window.realEstateApp) {
                 window.realEstateApp.initMap();
             }
         }
+
+        function loadGoogleMaps(apiKey) {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            script.onerror = function() {
+                alert("Failed to load Google Maps. Please check your API key.");
+                localStorage.removeItem('gm_api_key');
+                window.location.reload();
+            };
+            document.head.appendChild(script);
+        }
+
+        function saveAndLoadMap() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (key) {
+                localStorage.setItem('gm_api_key', key);
+                
+                // Update UI state
+                document.getElementById('api-key-prompt').classList.add('hidden');
+                document.getElementById('map-loading-text').classList.remove('hidden');
+                document.getElementById('map-loading-icon').classList.add('animate-pulse');
+                
+                loadGoogleMaps(key);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedGoogleMapsApiKey = localStorage.getItem('gm_api_key');
+            
+            // For convenience, if the user explicitly hardcoded it previously in this block, allow it.
+            // But since this is GitHub pages, BYOK is preferred.
+            if (savedGoogleMapsApiKey) {
+                loadGoogleMaps(savedGoogleMapsApiKey);
+            } else {
+                // Show prompt after a tiny delay for visual effect
+                setTimeout(() => {
+                    const promptDiv = document.getElementById('api-key-prompt');
+                    if (promptDiv) promptDiv.classList.remove('hidden');
+                    const loadingText = document.getElementById('map-loading-text');
+                    if (loadingText) loadingText.classList.add('hidden');
+                    const icon = document.getElementById('map-loading-icon');
+                    if (icon) icon.classList.remove('animate-pulse');
+                }, 300);
+            }
+        });
     </script>
-    <!-- REPLACE 'YOUR_API_KEY_HERE' WITH A REAL KEY -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initMap"></script>
 </body>
 </html>

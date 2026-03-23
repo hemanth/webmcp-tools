@@ -33,8 +33,8 @@ When an AI agent is active, it can:
 
 1. Clone the repository and navigate to the `demos/real-estate-map` directory.
 2. Ensure you have a valid **Google Maps API Key** to render the interactive map properly.
-   - Open `map.html` and locate the `<script>` tag referencing the Google Maps API near the end of the document.
-   - Insert your key into the `key=` parameter value: `src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initMap"`
+   - When you load the map, you will be prompted to enter your API key directly in the UI. It will be saved securely to your browser's `localStorage` so you don't have to enter it again.
+   - **For GitHub Pages or Public Deployment:** Do not hardcode an unrestricted key! If you want your users to see the map without entering their own key, create a dedicated API key in the Google Cloud Console and add an **HTTP Referrers** restriction (e.g., `*username.github.io/webmcp-tools/*`). You can then manually modify `map.html` to hardcode the restricted key if desired.
 3. Start a local HTTP server in this directory. For example, using Python or Node.js:
    ```bash
    # Python
