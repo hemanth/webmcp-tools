@@ -57,8 +57,10 @@
                 Search through our exclusive collection of luxury apartments, charming studios, and private houses.
             </p>
 
-            <!-- Declarative WebMCP Tool Form -->
-            <form id="search-form" 
+            <!-- Container for search UI so we can hide it if key is missing -->
+            <div id="search-container" class="w-full transition-opacity duration-300">
+                <!-- Declarative WebMCP Tool Form -->
+                <form id="search-form" 
                   class="bg-white p-2 rounded-full shadow-2xl flex flex-col md:flex-row items-center gap-2 max-w-2xl mx-auto w-full relative"
                   toolname="search_location" 
                   tooldescription="Searches for real estate properties in a given city or neighborhood by navigating to the map view." 
@@ -71,7 +73,7 @@
                 <input type="text" 
                        name="location" 
                        id="location-input"
-                       placeholder="Enter a city, neighborhood, or postal code (e.g., Seattle)" 
+                       placeholder="Enter a city like 'Seattle'" 
                        class="flex-1 w-full bg-transparent border-none focus:ring-0 outline-none px-12 md:px-2 py-4 text-slate-700 text-lg placeholder-slate-400 font-medium"
                        autofocus
                        required
@@ -85,12 +87,50 @@
             
             <div class="mt-8 flex items-center justify-center gap-4 text-sm font-medium text-white/90 drop-shadow-md flex-wrap">
                 <span>Quick Search:</span>
-                <a href="map.html?location=Seattle" class="bg-white/20 hover:bg-white/40 px-5 py-2 rounded-full backdrop-blur-sm border border-white/40 transition-all font-bold text-white shadow-sm ring-1 ring-white/20">Seattle</a>
-                <a href="map.html?location=Austin" class="bg-white/20 hover:bg-white/40 px-5 py-2 rounded-full backdrop-blur-sm border border-white/40 transition-all font-bold text-white shadow-sm ring-1 ring-white/20">Austin</a>
-                <a href="map.html?location=Miami" class="bg-white/20 hover:bg-white/40 px-5 py-2 rounded-full backdrop-blur-sm border border-white/40 transition-all font-bold text-white shadow-sm ring-1 ring-white/20">Miami</a>
+                <a href="map.html?location=Seattle" class="quick-link bg-white/20 hover:bg-white/40 px-5 py-2 rounded-full backdrop-blur-sm border border-white/40 transition-all font-bold text-white shadow-sm ring-1 ring-white/20">Seattle</a>
+                <a href="map.html?location=Austin" class="quick-link bg-white/20 hover:bg-white/40 px-5 py-2 rounded-full backdrop-blur-sm border border-white/40 transition-all font-bold text-white shadow-sm ring-1 ring-white/20">Austin</a>
+                <a href="map.html?location=Miami" class="quick-link bg-white/20 hover:bg-white/40 px-5 py-2 rounded-full backdrop-blur-sm border border-white/40 transition-all font-bold text-white shadow-sm ring-1 ring-white/20">Miami</a>
+            </div>
+            </div> <!-- End search-container -->
+
+            <div id="api-key-error" class="mt-8 flex flex-col items-center bg-white/10 p-6 rounded-xl shadow-lg border border-white/20 max-w-sm mx-auto text-center hidden backdrop-blur-md">
+                <span class="material-symbols-outlined text-3xl text-red-500 mb-2">error</span>
+                <h3 class="font-bold text-white mb-2">API Key Required</h3>
+                <p class="text-sm text-white/80 mb-4">To use the app, please provide your Google Maps API key as an URL parameter (<code>?key=YOUR_API_KEY</code>).</p>
+                <p class="text-[10px] text-white/50 mt-3">For production, restrict your API key to your specific domain via the Google Cloud Console.</p>
             </div>
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const key = urlParams.get('key');
+            
+            const searchContainer = document.getElementById('search-container');
+            const errorDiv = document.getElementById('api-key-error');
+
+            if (!key) {
+                if (searchContainer) searchContainer.classList.add('hidden');
+                if (errorDiv) errorDiv.classList.remove('hidden');
+            } else {
+                const form = document.getElementById('search-form');
+                if (form) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'key';
+                    hiddenInput.value = key;
+                    form.appendChild(hiddenInput);
+                }
+
+                const quickLinks = document.querySelectorAll('.quick-link');
+                quickLinks.forEach(link => {
+                    const url = new URL(link.href);
+                    url.searchParams.set('key', key);
+                    link.href = url.toString();
+                });
+            }
+        });
+    </script>
 </body>
 </html>
