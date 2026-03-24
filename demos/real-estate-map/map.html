@@ -234,14 +234,10 @@
                 <span class="material-symbols-outlined text-4xl mb-2 animate-pulse" id="map-loading-icon">location_on</span>
                 <p id="map-loading-text">Loading interactive map...</p>
                 
-                <div id="api-key-prompt" class="mt-4 flex flex-col items-center hidden bg-white p-6 rounded-xl shadow-lg border border-slate-200 max-w-sm text-center">
-                    <span class="material-symbols-outlined text-3xl text-primary mb-2">vpn_key</span>
+                <div id="api-key-error" class="mt-4 flex flex-col items-center hidden bg-white p-6 rounded-xl shadow-lg border border-slate-200 max-w-sm text-center">
+                    <span class="material-symbols-outlined text-3xl text-red-500 mb-2">error</span>
                     <h3 class="font-bold text-slate-800 mb-2">API Key Required</h3>
-                    <p class="text-sm text-slate-600 mb-4">To view the map, please provide your Google Maps API key. It will be stored securely in your browser's localStorage.</p>
-                    <input type="password" id="api-key-input" placeholder="AIzaSy..." class="w-full border border-slate-300 rounded-lg px-3 py-2 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                    <button onclick="saveAndLoadMap()" class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-md">
-                        Load Map
-                    </button>
+                    <p class="text-sm text-slate-600 mb-4">To view the map, please provide your Google Maps API key as an URL parameter (<code>?key=YOUR_API_KEY</code>).</p>
                     <p class="text-[10px] text-slate-400 mt-3 mt-4">For production, restrict your API key to your specific domain (like GitHub Pages) via the Google Cloud Console.</p>
                 </div>
             </div>
@@ -273,38 +269,28 @@
             script.defer = true;
             script.onerror = function() {
                 alert("Failed to load Google Maps. Please check your API key.");
-                localStorage.removeItem('gm_api_key');
+                const url = new URL(window.location);
+                url.searchParams.delete('key');
+                window.history.replaceState({}, '', url);
                 window.location.reload();
             };
             document.head.appendChild(script);
         }
 
-        function saveAndLoadMap() {
-            const key = document.getElementById('api-key-input').value.trim();
-            if (key) {
-                localStorage.setItem('gm_api_key', key);
-                
-                // Update UI state
-                document.getElementById('api-key-prompt').classList.add('hidden');
-                document.getElementById('map-loading-text').classList.remove('hidden');
-                document.getElementById('map-loading-icon').classList.add('animate-pulse');
-                
-                loadGoogleMaps(key);
-            }
-        }
+
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedGoogleMapsApiKey = localStorage.getItem('gm_api_key');
+            const urlParams = new URLSearchParams(window.location.search);
+            const savedGoogleMapsApiKey = urlParams.get('key');
             
-            // For convenience, if the user explicitly hardcoded it previously in this block, allow it.
-            // But since this is GitHub pages, BYOK is preferred.
+            // For convenience, if the user explicitly provided it in the URL, allow it.
             if (savedGoogleMapsApiKey) {
                 loadGoogleMaps(savedGoogleMapsApiKey);
             } else {
-                // Show prompt after a tiny delay for visual effect
+                // Show error message if no key provided
                 setTimeout(() => {
-                    const promptDiv = document.getElementById('api-key-prompt');
-                    if (promptDiv) promptDiv.classList.remove('hidden');
+                    const errorDiv = document.getElementById('api-key-error');
+                    if (errorDiv) errorDiv.classList.remove('hidden');
                     const loadingText = document.getElementById('map-loading-text');
                     if (loadingText) loadingText.classList.add('hidden');
                     const icon = document.getElementById('map-loading-icon');
