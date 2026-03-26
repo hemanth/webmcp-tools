@@ -328,10 +328,11 @@ export function registerFlightResultsTools() {
   if (modelContext) {
     if (!registeredTools.resultsTools) {
       registeredTools.resultsTools = new AbortController();
-      modelContext.registerTool(listFlightsTool, { signal: registeredTools.resultsTools.signal });
-      modelContext.registerTool(setFiltersTool, { signal: registeredTools.resultsTools.signal });
-      modelContext.registerTool(resetFiltersTool, { signal: registeredTools.resultsTools.signal });
-      modelContext.registerTool(searchFlightsTool, { signal: registeredTools.resultsTools.signal });
+      const options = { signal: registeredTools.resultsTools.signal };
+      modelContext.registerTool(listFlightsTool, options);
+      modelContext.registerTool(setFiltersTool, options);
+      modelContext.registerTool(resetFiltersTool, options);
+      modelContext.registerTool(searchFlightsTool, options);
     }
   }
 }
