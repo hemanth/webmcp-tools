@@ -15,6 +15,20 @@ A curated list of awesome WebMCP demos.
   - **Example Prompt:** "Search flights from LON to NYC leaving next Monday and returning after a week for 2 passengers."
 - [WebMCP zaMaker!](https://googlechromelabs.github.io/webmcp-tools/demos/pizza-maker/) - An interactive pizza builder demonstrating imperative tool registration, allowing AI models to make custom pizzas.
   - **Example Prompt:** "Make me a large BBQ pizza with sauce, pineapple and extra bacon."
+- [Mystery Doors](https://googlechromelabs.github.io/webmcp-tools/demos/doors/) - A simple multi-page demo showcasing WebMCP capabilities using both declarative and imperative approaches.
+  - **Example Prompt:** "Explore the rooms"
+- [WebMCP Maze](https://googlechromelabs.github.io/webmcp-tools/demos/webmcp-maze/) - A maze escape game where the player navigates entirely by prompting an AI agent in the browser — no keyboard or mouse input.
+  - **Example Prompts:** "Start a new game", then "Solve the maze"
+- [CineFlow](https://googlechromelabs.github.io/webmcp-tools/demos/ticket-booking/) - A movie ticket purchase flow where AI agents can update location, query movies by genre, and select showtimes to start a checkout process.
+  - **Example Prompt:** "Find two tickets for a horror movie in Montpelier tonight"
+- [Order Tracking](https://googlechromelabs.github.io/webmcp-tools/demos/order-tracking/) - A simulated e-commerce order tracking and returns system allowing an AI agent to query order history and initiate returns via declarative tools.
+  - **Example Prompt:** "Where is my order from last week? If it’s delivered, I need to start a return."
+- [L'Atelier Hotel Chain](https://googlechromelabs.github.io/webmcp-tools/demos/hotel-chain/) - A high-fidelity hotel booking application designed to showcase the power of WebMCP. This demo illustrates how AI agents can interact with a modern web application through both imperative and declarative tools.
+  - **Example Prompt:** "Find a hotel in Paris with a Spa."
+- [WebMCP Sports](https://googlechromelabs.github.io/webmcp-tools/demos/sport-shop-angular/) - A modern e-commerce storefront for high-performance sports equipment, built with Angular and Vanilla CSS.
+  - **Example Prompt:** "Find training balls and add them to cart."
+- [Shoe store](https://andreinwald.github.io/webmcp-demo/) | [Code](https://github.com/andreinwald/webmcp-demo) - online store built with React, with all core functionality MCP-ready.
+  - **Example Prompt:** "Suggest the 3 best pairs of soccer shoes (foot size 45) available on this site. Add (one of suggestions) to cart and complete purchase."
 - [Flight booking](https://webmcp-flight-demo.netlify.app/) / [Flight booking (declarative)](https://webmcp-flight-demo.netlify.app/declarative.html) - Find the best flights for your journey.
   - **Example Prompt:** "I want to book a flight from New York to Los Angeles for two people on next Thursday."
 - [Animal Viewer](https://65s6dw.csb.app/) - A simple codesandbox demo page that shows either a dog or a cat image.
@@ -23,6 +37,8 @@ A curated list of awesome WebMCP demos.
   - **Example Prompt:** "Let's play chess. You play white. Make your opening move."
 - **Moving Beyond Screen Scraping**: A hands-on example of using WebMCP to create an agentic first experience with 10x fewer tokens
   - [Article](https://medium.com/data-science-collective/moving-beyond-screen-scraping-creating-an-agent-native-web-app-with-webmcp-4818552e1e11) | [Code](https://github.com/hugozanini/air-bird-booking-web-mcp)
+- [AI Audit](https://audit.wordlift.io/) - Audit any website's readiness for the agentic web. Exposes a `run-audit` tool via `navigator.modelContext` that lets an AI agent programmatically trigger a full AI readiness analysis (score 0–100) covering site files, SEO, structured data, content, and more.
+  - **Example Prompt:** "Run an AI readiness audit on https://example.com"
 - [Blackjack Agents](https://webmcp-blackjack.heejae.dev/) - Blackjack game with multiple AI agents (player, opponent, dealer) all using WebMCP tools. Each agent autonomously observes its hand, decides to hit or stand, and repeats until done — driven by tool descriptions alone.
   - [Code](https://github.com/happyhj/webmcp-blackjack)
   - **Example Prompt:** "Play my turn"
@@ -30,6 +46,9 @@ A curated list of awesome WebMCP demos.
   - **Example Prompt:** "Search for TC39 proposals related to decorators"
 - [WebMCP × Excalidraw x WebAI](https://shidh.in/demo/webmcp-excalidraw/) - A Web app that converts natural language descriptions into Excalidraw diagrams through a 3-tool WebMCP pipeline (generate_mermaid → validate_mermaid → render_excalidraw), with optional on-device generation using Chrome's built-in AI.
   - **Example Prompt**: "Create a flowchart showing the user login flow with error handling"
+- [WebMCP Flow](https://webmcp-flow.vercel.app/) - An AI-controllable architecture diagram builder that lets an AI agent create nodes, connect them with edges, and apply auto-layout in real time via WebMCP tools.
+  - [Code](https://github.com/ttimur-dev/webmcp-flow)
+  - **Example Prompt:** "Draw a typical web application architecture with authentication: browser client, API Gateway, Auth Service, User Service, PostgreSQL, Redis. Connect them with edges labeled by protocol and apply auto layout."
   
 ## Contributing
 

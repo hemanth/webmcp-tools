@@ -1,19 +1,8 @@
 import { flights, type Flight } from "./data/flights";
 
-declare global {
-  interface Navigator {
-    modelContext?: {
-      registerTool: (tool: object) => void;
-      unregisterTool: (name: string) => void;
-    };
-  }
-}
-
-const registeredTools = {
-  listFlights: false,
-  setFilters: false,
-  resetFilters: false,
-  searchFlights: false,
+const registeredTools: Record<string, AbortController | null> = {
+  searchTools: null,
+  resultsTools: null,
 };
 
 function dispatchAndWait(
@@ -107,7 +96,7 @@ export const listFlightsTool = {
     required: ["result"],
   },
   annotations: {
-    readOnlyHint: "true",
+    readOnlyHint: true,
   },
 };
 
@@ -206,7 +195,7 @@ export const setFiltersTool = {
       "a message describing if the filter update request was successful or not",
   },
   annotations: {
-    readOnlyHint: "false",
+    readOnlyHint: false,
   },
 };
 
@@ -225,7 +214,7 @@ export const resetFiltersTool = {
       "a message describing if the filter reset request was successful or not",
   },
   annotations: {
-    readOnlyHint: "false",
+    readOnlyHint: false,
   },
 };
 
@@ -238,7 +227,8 @@ export type SearchFlights = {
   passengers: number;
 };
 
-export async function searchFlights(params: SearchFlights): Promise<string> {
+export async function searchFlights(p: unknown): Promise<string> {
+  const params = p as SearchFlights;
   if (!params.destination.match(/^[A-Z]{3}$/)) {
     return "ERROR: `destination` must be a 3 letter city or airport IATA code.";
   }
@@ -307,21 +297,28 @@ export const searchFlightsTool = {
     description: "a message describing the result of the flight search request",
   },
   annotations: {
-    readOnlyHint: "false",
+    readOnlyHint: false,
   },
 };
 
 export function registerFlightSearchTools() {
   const modelContext = window.navigator.modelContext;
   if (modelContext) {
-    modelContext.registerTool(searchFlightsTool);
+    if (!registeredTools.searchTools) {
+      registeredTools.searchTools = new AbortController();
+      modelContext.registerTool(searchFlightsTool, { signal: registeredTools.searchTools.signal });
+    }
   }
 }
 
 export function unregisterFlightSearchTools() {
   const modelContext = window.navigator.modelContext;
   if (modelContext) {
-    modelContext.unregisterTool(searchFlightsTool.name);
+    modelContext.unregisterTool?.(searchFlightsTool.name);
+    if (registeredTools.searchTools) {
+      registeredTools.searchTools.abort();
+      registeredTools.searchTools = null;
+    }
   }
 }
 
@@ -329,24 +326,13 @@ export function registerFlightResultsTools() {
   const modelContext = window.navigator.modelContext;
 
   if (modelContext) {
-    if (!registeredTools.listFlights) {
-      modelContext.registerTool(listFlightsTool);
-      registeredTools.listFlights = true;
-    }
-
-    if (!registeredTools.setFilters) {
-      modelContext.registerTool(setFiltersTool);
-      registeredTools.setFilters = true;
-    }
-
-    if (!registeredTools.resetFilters) {
-      modelContext.registerTool(resetFiltersTool);
-      registeredTools.resetFilters = true;
-    }
-
-    if (!registeredTools.searchFlights) {
-      modelContext.registerTool(searchFlightsTool);
-      registeredTools.searchFlights = true;
+    if (!registeredTools.resultsTools) {
+      registeredTools.resultsTools = new AbortController();
+      const options = { signal: registeredTools.resultsTools.signal };
+      modelContext.registerTool(listFlightsTool, options);
+      modelContext.registerTool(setFiltersTool, options);
+      modelContext.registerTool(resetFiltersTool, options);
+      modelContext.registerTool(searchFlightsTool, options);
     }
   }
 }
@@ -354,14 +340,14 @@ export function registerFlightResultsTools() {
 export function unregisterFlightResultsTools() {
   const modelContext = window.navigator.modelContext;
   if (modelContext) {
-    modelContext.unregisterTool(listFlightsTool.name);
-    modelContext.unregisterTool(setFiltersTool.name);
-    modelContext.unregisterTool(resetFiltersTool.name);
-    modelContext.unregisterTool(searchFlightsTool.name);
+    modelContext.unregisterTool?.(listFlightsTool.name);
+    modelContext.unregisterTool?.(setFiltersTool.name);
+    modelContext.unregisterTool?.(resetFiltersTool.name);
+    modelContext.unregisterTool?.(searchFlightsTool.name);
 
-    registeredTools.listFlights = false;
-    registeredTools.setFilters = false;
-    registeredTools.resetFilters = false;
-    registeredTools.searchFlights = false;
+    if (registeredTools.resultsTools) {
+      registeredTools.resultsTools.abort();
+      registeredTools.resultsTools = null;
+    }
   }
 }

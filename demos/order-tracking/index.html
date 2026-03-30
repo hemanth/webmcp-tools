@@ -1,0 +1,47 @@
+<!--
+ Copyright 2026 Google LLC
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Manrope:wght@600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>My Orders Dashboard</h1>
+            <p>Track your deliveries and manage returns seamlessly.</p>
+        </header>
+
+        <main class="dashboard-content">
+            <section class="tool-section">
+                <form id="get-order-status-form" toolname="get_order_status"
+                    tooldescription="Retrieve the current shipping status and location for a user's orders within a given timeframe."
+                    toolautosubmit action="history.html" method="GET">
+                    <label for="timeframe">Timeframe</label>
+                    <select id="timeframe" name="timeframe" required
+                        toolparamdescription="Timeframe for the order lookup.">
+                        <option value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="last_7_days" selected>Last 7 Days</option>
+                        <option value="last_30_days">Last 30 Days</option>
+                        <option value="last_6_months">Last 6 Months</option>
+                    </select>
+
+                    <button type="submit">Search Orders</button>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
