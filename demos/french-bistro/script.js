@@ -31,6 +31,11 @@ if (params.has('notoolparamdescription')) {
     element.removeAttribute('toolparamdescription');
   });
 }
+if (params.has('norequiredname')) {
+  document.querySelectorAll('[name][required]').forEach((element) => {
+    element.removeAttribute('name');
+  });
+}
 
 let formValidationErrors = []; // Array to collect validation error messages to send back to the Agent.
 
