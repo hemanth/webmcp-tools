@@ -158,14 +158,5 @@ if (modelContext) {
       return `Successfully zoomed to and opened details for property ID ${params.property_id} (${marker.propertyData.title}).`;
     }
   });
-} else {
-  console.warn("navigator.modelContext is not defined. Using WebMCP shim for testing.");
-  // Expose a testing shim just in case we are in devtools without proper capability
-  window.navigator.modelContextTesting = {
-    registerTool: (t) => {
-      window.registeredWebMcpTools = window.registeredWebMcpTools || [];
-      window.registeredWebMcpTools.push(t);
-    }
-  };
 }
 

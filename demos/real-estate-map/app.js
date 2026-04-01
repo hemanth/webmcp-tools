@@ -119,8 +119,9 @@ window.realEstateApp = {
             marker.propertyData = property;
 
             marker.addListener("click", () => {
+                const escapedTitle = property.title.replace(/'/g, "\\'");
                 const contentStr = `
-                    <div class="w-64 cursor-pointer" onclick="realEstateApp.showAlert('Opening detailed page for ${property.title}')">
+                    <div class="w-64 cursor-pointer" onclick="realEstateApp.showAlert('Opening detailed page for ${escapedTitle}')">
                         <img src="${property.image}" alt="${property.title}" class="w-full h-32 object-cover rounded-t-xl mb-2">
                         <div class="px-3 pb-3">
                             <h3 class="font-bold text-lg text-slate-900">${this.formatPrice(property.price)}</h3>
