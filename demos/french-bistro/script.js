@@ -19,6 +19,24 @@ if (toolAutoSubmit) {
   form.setAttribute("toolautosubmit", "true");
 }
 
+// Remove form attributes to test WebMCP audit failures
+if (params.has('notoolname')) {
+  form.removeAttribute('toolname');
+}
+if (params.has('notooldescription')) {
+  form.removeAttribute('tooldescription');
+}
+if (params.has('notoolparamdescription')) {
+  document.querySelectorAll('[toolparamdescription]').forEach((element) => {
+    element.removeAttribute('toolparamdescription');
+  });
+}
+if (params.has('norequiredname')) {
+  document.querySelectorAll('[name][required]').forEach((element) => {
+    element.removeAttribute('name');
+  });
+}
+
 let formValidationErrors = []; // Array to collect validation error messages to send back to the Agent.
 
 const dateInput = document.getElementById('date');
