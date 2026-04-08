@@ -19,6 +19,14 @@ A curated list of awesome WebMCP demos.
   - **Example Prompt:** "Explore the rooms"
 - [WebMCP Maze](https://googlechromelabs.github.io/webmcp-tools/demos/webmcp-maze/) - A maze escape game where the player navigates entirely by prompting an AI agent in the browser — no keyboard or mouse input.
   - **Example Prompts:** "Start a new game", then "Solve the maze"
+- [CineFlow](https://googlechromelabs.github.io/webmcp-tools/demos/ticket-booking/) - A movie ticket purchase flow where AI agents can update location, query movies by genre, and select showtimes to start a checkout process.
+  - **Example Prompt:** "Find two tickets for a horror movie in Montpelier tonight"
+- [Order Tracking](https://googlechromelabs.github.io/webmcp-tools/demos/order-tracking/) - A simulated e-commerce order tracking and returns system allowing an AI agent to query order history and initiate returns via declarative tools.
+  - **Example Prompt:** "Where is my order from last week? If it’s delivered, I need to start a return."
+- [L'Atelier Hotel Chain](https://googlechromelabs.github.io/webmcp-tools/demos/hotel-chain/) - A high-fidelity hotel booking application designed to showcase the power of WebMCP. This demo illustrates how AI agents can interact with a modern web application through both imperative and declarative tools.
+  - **Example Prompt:** "Find a hotel in Paris with a Spa."
+- [WebMCP Sports](https://googlechromelabs.github.io/webmcp-tools/demos/sport-shop-angular/) - A modern e-commerce storefront for high-performance sports equipment, built with Angular and Vanilla CSS.
+  - **Example Prompt:** "Find training balls and add them to cart."
 - [Shoe store](https://andreinwald.github.io/webmcp-demo/) | [Code](https://github.com/andreinwald/webmcp-demo) - online store built with React, with all core functionality MCP-ready.
   - **Example Prompt:** "Suggest the 3 best pairs of soccer shoes (foot size 45) available on this site. Add (one of suggestions) to cart and complete purchase."
 - [Flight booking](https://webmcp-flight-demo.netlify.app/) / [Flight booking (declarative)](https://webmcp-flight-demo.netlify.app/declarative.html) - Find the best flights for your journey.
@@ -42,6 +50,9 @@ A curated list of awesome WebMCP demos.
   - [Code](https://github.com/ttimur-dev/webmcp-flow)
   - **Example Prompt:** "Draw a typical web application architecture with authentication: browser client, API Gateway, Auth Service, User Service, PostgreSQL, Redis. Connect them with edges labeled by protocol and apply auto layout."
   
+- [UrbanEstates](https://googlechromelabs.github.io/webmcp-tools/demos/real-estate-map) - A real-estate map application that demonstrates imperative tool registration, allowing an AI agent to interact with property filters and map views.
+  - **Example Prompt:** "Find me an apartment in Austin", then "Find me an apartment with AC under $1,000,000."
+
 ## Contributing
 
 Contributions are welcome! Please read the [contribution guidelines](CONTRIBUTING.md) first.
