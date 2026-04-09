@@ -163,12 +163,14 @@
             <div class="accordion-content font-body text-on-surface-variant overflow-hidden transition-all duration-300" [style.maxHeight]="shippingOpen ? '500px' : '0'">
               <div class="pb-6 space-y-4">
                 <p>Standard delivery within 3-5 business days. Express shipping available at checkout.</p>
-                <button 
-                  class="text-primary font-label text-xs uppercase tracking-widest font-bold border-b border-primary hover:text-secondary hover:border-secondary transition-colors"
-                  (click)="openReturnModal($event)"
-                >
-                  View Full Return Policy
-                </button>
+                <form toolname="check_return_policy" tooldescription="Check the return policy for products" toolautosubmit (submit)="openReturnModal($event)">
+                  <button 
+                    type="submit"
+                    class="text-primary font-label text-xs uppercase tracking-widest font-bold border-b border-primary hover:text-secondary hover:border-secondary transition-colors"
+                  >
+                    View Full Return Policy
+                  </button>
+                </form>
               </div>
             </div>
           </div>
