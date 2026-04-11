@@ -27,11 +27,15 @@ export class Search implements OnInit {
     });
   }
 
-  onSearch(event: Event) {
+  onSearch(event: any) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
     const query = new FormData(form).get('query');
     this.router.navigate([], { relativeTo: this.route, queryParams: { q: query }, queryParamsHandling: 'merge' });
+    
+    if (event.respondWith) {
+      event.respondWith(Promise.resolve({ success: true, message: `Filtered results for ${query}` }));
+    }
   }
 
   loadProducts() {
