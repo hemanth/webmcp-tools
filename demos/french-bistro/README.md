@@ -31,4 +31,5 @@ Testing WebMCP audit failures can be streamlined by using specific URL parameter
 - `index.html?notoolname` removes `toolname` form attribute
 - `index.html?notooldescription` removes `tooldescription` form attribute.
 - `index.html?notoolparamdescription` removes `toolparamdescription` attribute from elements
+- `index.html?nolabelfor` removes `for` attribute from `<label>` elements
 - `index.html?norequiredname` removes `name` attribute from required form-associated elements
