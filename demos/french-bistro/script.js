@@ -26,6 +26,11 @@ if (params.has('notoolname')) {
 if (params.has('notooldescription')) {
   form.removeAttribute('tooldescription');
 }
+if (params.has('nolabelfor')) {
+  document.querySelectorAll('label[for]').forEach((element) => {
+    element.removeAttribute('for');
+  });
+}
 if (params.has('notoolparamdescription')) {
   document.querySelectorAll('[toolparamdescription]').forEach((element) => {
     element.removeAttribute('toolparamdescription');

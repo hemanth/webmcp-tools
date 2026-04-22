@@ -73,6 +73,7 @@ jobs:
           cp -r demos/hotel-chain/dist deployment-root/demos/hotel-chain
           cp -r demos/analytics-dashboard/dist deployment-root/demos/analytics-dashboard
           cp -r demos/real-estate-map deployment-root/demos/real-estate-map
+          cp -r demos/coffee-shop deployment-root/demos/coffee-shop
           cp -r demos/leather-bag/dist/leather-bag/browser deployment-root/demos/leather-bag
 
 
