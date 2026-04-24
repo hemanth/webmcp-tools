@@ -53,6 +53,8 @@ A curated list of awesome WebMCP demos.
   - **Example Prompt:** "Will the espresso machine fit under a 15-inch cabinet?"
 - [UrbanEstates](https://googlechromelabs.github.io/webmcp-tools/demos/real-estate-map) - A real-estate map application that demonstrates imperative tool registration, allowing an AI agent to interact with property filters and map views.
   - **Example Prompt:** "Find me an apartment in Austin", then "Find me an apartment with AC under $1,000,000."
+- [Luxe Leather](https://googlechromelabs.github.io/webmcp-tools/demos/leather-bag) - A premium e-commerce site for hand-crafted leather goods built with Angular and WebMCP. This demo showcases how an AI agent can interact with a web application to search products, check policies, and manage a shopping cart using declarative tools.
+  - **Example Prompt:** "Find a handmade leather bag, check if they have a 30-day return policy, and if yes, add the brown one to my cart"
 
 ## Contributing
 

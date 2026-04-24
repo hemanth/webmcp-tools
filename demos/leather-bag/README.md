@@ -1,59 +1,66 @@
-# LeatherBag
+# LUXE LEATHER | WebMCP E-commerce Demo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+🚀 Live Demo: https://googlechromelabs.github.io/webmcp-tools/demos/leather-bag
 
-## Development server
+A premium, modern e-commerce storefront for hand-crafted leather bags, built with Angular and WebMCP (Web Model Context Protocol). This project demonstrates how an AI agent can interact with an e-commerce site to search products, check policies, and manage a shopping cart using **declarative** tool definitions.
 
-To start a local development server, run:
+## 🌟 Key Features
 
-```bash
-ng serve
-```
+- **WebMCP Declarative Tools**: 
+  - `search_store`: Search and filter products.
+  - `check_return_policy`: Access site-wide return policy.
+  - `view_product`: Navigate to product details by name or index.
+  - `add_search_result_to_cart`: Quick add from search results.
+  - `add_to_cart`: Add product with options from the detail page.
+- **Advanced Product Finding**: Tools support finding products by exact name, partial name, or their position in search results (index).
+- **Premium Design System**: Features the "Artisanal Archive" aesthetic with curated color palettes and elegant typography.
+- **Actionable Filters**: Dynamic price slider, color swatches, and finish checkboxes on the search page.
+- **Cart Management**: A dedicated Cart Page with quantity controls and order summary calculation.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🛠 Tech Stack
 
-## Code scaffolding
+- **Framework**: Angular 21 (Standalone Components)
+- **Protocol**: WebMCP (Declarative Tools via HTML forms)
+- **Styling**: Vanilla CSS (BEM-like)
+- **Build Tool**: Angular CLI / Vite
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🚀 Getting Started
 
-```bash
-ng generate component component-name
-```
+### Prerequisites
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Node.js (v18 or later)
+- npm (v10 or later)
 
-```bash
-ng generate --help
-```
+### Installation
 
-## Building
+1. Navigate to the project directory:
+   ```bash
+   cd demos/leather-bag
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-To build the project run:
+### Development Server
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Start a local development server at `http://localhost:4200/`:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 📂 Project Structure
 
-## Additional Resources
+- `src/app/pages`: Core views (Home, Search, Product, Cart)
+- `src/app/layout`: Shared layout components (Header, Footer)
+- `src/app/services`: Business logic (Cart service, Product discovery)
+- `public/assets`: Product images and data files
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🧪 Testing
+
+Run unit tests with Vitest:
+
+```bash
+npm test
+```
