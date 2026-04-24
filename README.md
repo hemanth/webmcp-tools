@@ -20,6 +20,7 @@ This repository contains a suite of developer utilities and demos designed to su
 - [**WebMCP Sports (Imperative & Declarative)**](demos/sport-shop-angular/): A modern e-commerce storefront for high-performance sports equipment, built with Angular and Vanilla CSS.
 - [**The Morning Ritual (Imperative)**](demos/coffee-shop/): A premium coffee boutique demo showcasing agentic reordering, technical spec analysis, and catalog navigation.
 - [**UrbanEstates (Imperative)**](demos/real-estate-map/): A real-estate map application that demonstrates imperative tool registration, allowing an AI agent to interact with property filters and map views.
+- [**Luxe Leather (Declarative)**](demos/leather-bag/): A premium e-commerce site for hand-crafted leather bags built with Angular and WebMCP. This demo showcases how an AI agent can interact with a web application to search products, check policies, and manage a shopping cart using declarative tools.
 
 Check out our curated list of WebMCP demos in the [Awesome WebMCP List](AWESOME_WEBMCP.md).
 
