@@ -7,6 +7,40 @@ const form = document.getElementById('reservationForm');
 const dialog = document.getElementById('bookingDialog');
 const closeBtn = document.getElementById('closeDialogBtn');
 const modalDetails = document.getElementById('modalDetails');
+const params = new URLSearchParams(window.location.search);
+const isCrossDocument = params.has("crossdocument");
+const toolAutoSubmit = params.has("toolautosubmit");
+
+if (isCrossDocument) {
+  form.setAttribute("action", "./result.html");
+}
+
+if (toolAutoSubmit) {
+  form.setAttribute("toolautosubmit", "true");
+}
+
+// Remove form attributes to test WebMCP audit failures
+if (params.has('notoolname')) {
+  form.removeAttribute('toolname');
+}
+if (params.has('notooldescription')) {
+  form.removeAttribute('tooldescription');
+}
+if (params.has('nolabelfor')) {
+  document.querySelectorAll('label[for]').forEach((element) => {
+    element.removeAttribute('for');
+  });
+}
+if (params.has('notoolparamdescription')) {
+  document.querySelectorAll('[toolparamdescription]').forEach((element) => {
+    element.removeAttribute('toolparamdescription');
+  });
+}
+if (params.has('norequiredname')) {
+  document.querySelectorAll('[name][required]').forEach((element) => {
+    element.removeAttribute('name');
+  });
+}
 
 let formValidationErrors = []; // Array to collect validation error messages to send back to the Agent.
 
@@ -23,6 +57,11 @@ form.addEventListener('submit', function (e) {
     if (e.agentInvoked) {
       e.respondWith(formValidationErrors);
     }
+    return;
+  }
+
+  if (isCrossDocument) {
+    form.submit();
     return;
   }
 

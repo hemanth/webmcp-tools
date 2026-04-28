@@ -6,7 +6,7 @@
 import puppeteer, { Browser, Page } from "puppeteer-core";
 import { tool as defineTool, jsonSchema } from "ai";
 import { Tool } from "../types/tools.js";
-import { mapRawBrowserToolsToConfig } from "./mappers.js";
+import { mapRawBrowserToolsToConfig, sanitizeSchema } from "./mappers.js";
 import { findChromePath } from "../utils.js";
 
 /**
@@ -14,43 +14,91 @@ import { findChromePath } from "../utils.js";
  * WebMCP bindings inside the puppeteer browser execution context.
  */
 export function createBrowserTool(t: Tool, page: Page): any {
+  const sanitizedParams = sanitizeSchema(t.parameters || {});
   return defineTool({
     description: t.description,
-    parameters: jsonSchema(t.parameters || {}) as any,
-    inputSchema: jsonSchema(t.parameters || {}) as any,
+    parameters: jsonSchema(sanitizedParams) as any,
+    inputSchema: jsonSchema(sanitizedParams) as any,
     execute: async (args: any) => {
-      const executionResult: any = await page.evaluate(async (name, args) => {
-        try {
-          let mct = null;
-          if (typeof (navigator as any).modelContext?.executeTool === 'function') {
-            mct = (navigator as any).modelContext;
-          } else if (typeof (navigator as any).modelContextTesting?.executeTool === 'function') {
-            mct = (navigator as any).modelContextTesting;
-          }
-          if (!mct) return { error: "modelContext not found" };
-          const payload = typeof args === 'string' ? args : JSON.stringify(args || {});
-          const result = await mct.executeTool(name, payload);
-          
-          // Slight backoff for DOM layout recalculations if UI changes
-          await new Promise(r => setTimeout(r, 3000));
-          
-          return { result };
-        } catch (e: any) {
-          return { error: e.message || String(e) };
+      let executionResult: any;
+
+      try {
+        executionResult = await page.evaluate(
+          async (name, args) => {
+            try {
+              let mct = null;
+              if (typeof (navigator as any).modelContext?.executeTool === "function") {
+                mct = (navigator as any).modelContext;
+              } else if (
+                typeof (navigator as any).modelContextTesting?.executeTool === "function"
+              ) {
+                mct = (navigator as any).modelContextTesting;
+              }
+              if (!mct) return { error: "modelContext not found" };
+              const payload = typeof args === "string" ? args : JSON.stringify(args || {});
+              const result = await mct.executeTool(name, payload);
+
+              return { result };
+            } catch (e: any) {
+              return { error: e.message || String(e) };
+            }
+          },
+          t.functionName,
+          args,
+        );
+
+        // If executionResult.result is null, it might be due to a navigation happening,
+        // so fall back to using getCrossDocumentScriptToolResult().
+        if (!executionResult.result) {
+          await page.waitForNavigation();
+          executionResult = await page.evaluate(async () => {
+            try {
+              let mct = null;
+              if (typeof (navigator as any).modelContext?.executeTool === "function") {
+                mct = (navigator as any).modelContext;
+              } else if (
+                typeof (navigator as any).modelContextTesting?.executeTool === "function"
+              ) {
+                mct = (navigator as any).modelContextTesting;
+              }
+
+              if (!mct) return { error: "modelContext not found" };
+
+              const result = await mct.getCrossDocumentScriptToolResult();
+              return { result, crossDocument: true };
+            } catch (e: any) {
+              return { error: e.message || String(e) };
+            }
+          });
         }
-      }, t.functionName, args);
+      } catch (e: any) {
+        if (
+          e.message.includes("Execution context was destroyed") ||
+          e.message.includes("Target closed") ||
+          e.message.includes("navigating")
+        ) {
+          await new Promise((r) => setTimeout(r, 500));
+          executionResult = {
+            result: `Tool ${t.functionName} executed and triggered a page navigation.`,
+          };
+        } else {
+          executionResult = { error: e.message || String(e) };
+        }
+      }
 
       let r = executionResult.result;
-      if (typeof r === 'string') {
-        try { r = JSON.parse(r); } catch (e) { }
+      if (typeof r === "string") {
+        try {
+          r = JSON.parse(r);
+        } catch {}
       }
-      
+
       // Attempt to drill down into structured responses
       if (r?.content && Array.isArray(r.content) && r.content[0]?.text) {
         return r.content[0].text;
       }
       return r || executionResult.error || "Success";
-    }
+    },
   } as any);
 }
 
@@ -71,11 +119,7 @@ export async function listToolsFromPage(url: string): Promise<Tool[]> {
     browser = await puppeteer.launch({
       executablePath,
       headless: true,
-      args: [
-        "--enable-features=WebMCPTesting",
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-      ],
+      args: ["--enable-features=WebMCPTesting", "--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
@@ -94,9 +138,9 @@ export async function listToolsFromPage(url: string): Promise<Tool[]> {
 
     const rawTools = await page.evaluate(async () => {
       let modelContext = null;
-      if (typeof (navigator as any).modelContext?.listTools === 'function') {
+      if (typeof (navigator as any).modelContext?.listTools === "function") {
         modelContext = (navigator as any).modelContext;
-      } else if (typeof (navigator as any).modelContextTesting?.listTools === 'function') {
+      } else if (typeof (navigator as any).modelContextTesting?.listTools === "function") {
         modelContext = (navigator as any).modelContextTesting;
       }
 
@@ -119,7 +163,7 @@ export async function listToolsFromPage(url: string): Promise<Tool[]> {
     if (!Array.isArray(rawTools) || rawTools.length === 0) {
       throw new Error(
         `The WebMCP API returned no tools from ${url}. ` +
-        "Ensure the page exposes tools via modelContextTesting.listTools().",
+          "Ensure the page exposes tools via modelContextTesting.listTools().",
       );
     }
 
